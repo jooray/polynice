@@ -25,6 +25,12 @@ try:
 except NameError:
     ProcessLookupError = OSError
 
+try:
+    from subprocess import DEVNULL # python 3
+except ImportError:
+    import os
+    DEVNULL = open(os.devnull, 'wb')
+
 VERSION='0.6'
 
 def DEBUG(level, *msg, **args):
@@ -106,7 +112,7 @@ def renice_pid_fallback(pid, niceness, ioclass, ioclassdata):
         DEBUG(2, 'setting scheduler priority of {} to {}'.format(pid, niceness))
         cmd = ['renice', '-n', str(niceness), '-p', str(pid)]
         DEBUG(2, 'calling '+' '.join(cmd))
-        subprocess.call(cmd)
+        subprocess.call(cmd, stdout=DEVNULL)
     if ioclass is not None:
         if sys.platform in ('linux', 'linux2'):
           DEBUG(2, 'setting i/o class of {} to {}, classdata {}'.format(pid, ioclass, ioclassdata))
@@ -115,7 +121,7 @@ def renice_pid_fallback(pid, niceness, ioclass, ioclassdata):
               cmd += ['-n', str(ioclassdata)]
           cmd += ['-p', str(pid)]
           DEBUG(2, 'calling '+' '.join(cmd))
-          subprocess.call(cmd)
+          subprocess.call(cmd, stdout=DEVNULL)
         else:
           DEBUG(1, 'ionice not supported on non-Linux platforms')
 
