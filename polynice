@@ -94,7 +94,7 @@ def renice_pid_psutil(pid, niceness, ioclass, ioclassdata):
         if niceness is not None:
             DEBUG(2, 'setting scheduler priority of {} to {}'.format(pid, niceness))
             p.set_nice(niceness)
-        if ioclass is not None:
+        if (ioclass is not None) and ('set_ionice' in p.__dict__):
             DEBUG(2, 'setting i/o class of {} to {}, classdata {}'.format(pid, ioclass, ioclassdata))
             p.set_ionice(ioclass, ioclassdata)
     except ProcessLookupError:
