@@ -29,10 +29,12 @@ try:
     from subprocess import DEVNULL # python 3
 except ImportError:
     import os
+    global DEVNULL
     DEVNULL = open(os.devnull, 'wb')
 
 VERSION='0.6'
 
+global debuglevel
 debuglevel = 0
 
 def DEBUG(level, *msg, **args):
@@ -340,7 +342,6 @@ if __name__ == '__main__':
 
     args, rest = parser.parse_known_args()
 
-    global debuglevel
     debuglevel = args.debuglevel
     DEBUG(3, 'args:', str(args))
     DEBUG(3, 'optparse:', using_optparse)
